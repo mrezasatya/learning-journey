@@ -32,6 +32,10 @@ Route::middleware(['auth', 'account'])->group(function () {
     Route::get('/', HomeController::class)->name('home');
     Route::get('/profil', ProfileController::class)->name('profile');
 
+    // Berkas hanya lewat URL bertanda tangan & berbatas waktu (Brief 9.2)
+    Route::get('/berkas/{file}/{variant?}', [\App\Http\Controllers\FileController::class, 'show'])
+        ->middleware('signed')->name('files.show');
+
     // ---- Karyawan ----
     Route::middleware('role:employee')->group(function () {
         Route::view('/beranda', 'employee.home-placeholder')->name('employee.home');
@@ -62,5 +66,47 @@ Route::middleware(['auth', 'account'])->group(function () {
         Route::put('/master/{type}/{id}', [Admin\MasterDataController::class, 'update'])->name('master.update');
         Route::post('/master/{type}/{id}/toggle', [Admin\MasterDataController::class, 'toggle'])->name('master.toggle');
         Route::delete('/master/{type}/{id}', [Admin\MasterDataController::class, 'destroy'])->name('master.destroy');
+
+        // Tahap 4 — Program, konten, bank soal, survei
+        Route::get('/program', [Admin\ProgramController::class, 'index'])->name('programs.index');
+        Route::get('/program/baru', [Admin\ProgramController::class, 'create'])->name('programs.create');
+        Route::post('/program', [Admin\ProgramController::class, 'store'])->name('programs.store');
+        Route::get('/program/{program}', [Admin\ProgramController::class, 'show'])->name('programs.show');
+        Route::get('/program/{program}/edit', [Admin\ProgramController::class, 'edit'])->name('programs.edit');
+        Route::put('/program/{program}', [Admin\ProgramController::class, 'update'])->name('programs.update');
+        Route::delete('/program/{program}', [Admin\ProgramController::class, 'destroy'])->name('programs.destroy');
+        Route::post('/program/{program}/terbitkan', [Admin\ProgramController::class, 'publish'])->name('programs.publish');
+        Route::post('/program/{program}/arsipkan', [Admin\ProgramController::class, 'archive'])->name('programs.archive');
+        Route::post('/program/{program}/versi-baru', [Admin\ProgramController::class, 'newVersion'])->name('programs.version');
+        Route::put('/program/{program}/tes', [Admin\ProgramController::class, 'updateAssessments'])->name('assessments.update');
+        Route::get('/program/{program}/status-berkas', [Admin\ContentController::class, 'processingStatus'])->name('programs.processing');
+
+        Route::post('/program/{program}/modul', [Admin\ContentController::class, 'storeModule'])->name('modules.store');
+        Route::put('/modul/{module}', [Admin\ContentController::class, 'updateModule'])->name('modules.update');
+        Route::delete('/modul/{module}', [Admin\ContentController::class, 'destroyModule'])->name('modules.destroy');
+        Route::post('/modul/{module}/pindah/{dir}', [Admin\ContentController::class, 'moveModule'])->whereIn('dir', ['up', 'down'])->name('modules.move');
+        Route::get('/modul/{module}/materi/baru', [Admin\ContentController::class, 'createLesson'])->name('lessons.create');
+        Route::post('/modul/{module}/materi', [Admin\ContentController::class, 'storeLesson'])->name('lessons.store');
+        Route::get('/materi/{lesson}/edit', [Admin\ContentController::class, 'editLesson'])->name('lessons.edit');
+        Route::put('/materi/{lesson}', [Admin\ContentController::class, 'updateLesson'])->name('lessons.update');
+        Route::delete('/materi/{lesson}', [Admin\ContentController::class, 'destroyLesson'])->name('lessons.destroy');
+        Route::post('/materi/{lesson}/pindah/{dir}', [Admin\ContentController::class, 'moveLesson'])->whereIn('dir', ['up', 'down'])->name('lessons.move');
+        Route::post('/materi/{lesson}/proses-ulang', [Admin\ContentController::class, 'retryProcessing'])->name('lessons.retry');
+
+        Route::get('/program/{program}/soal', [Admin\QuestionController::class, 'index'])->name('questions.index');
+        Route::get('/program/{program}/soal/baru', [Admin\QuestionController::class, 'create'])->name('questions.create');
+        Route::post('/program/{program}/soal', [Admin\QuestionController::class, 'store'])->name('questions.store');
+        Route::post('/program/{program}/soal/impor', [Admin\QuestionController::class, 'import'])->name('questions.import');
+        Route::get('/soal/template', [Admin\QuestionController::class, 'template'])->name('questions.template');
+        Route::get('/soal/{question}/edit', [Admin\QuestionController::class, 'edit'])->name('questions.edit');
+        Route::put('/soal/{question}', [Admin\QuestionController::class, 'update'])->name('questions.update');
+        Route::post('/soal/{question}/toggle', [Admin\QuestionController::class, 'toggle'])->name('questions.toggle');
+        Route::delete('/soal/{question}', [Admin\QuestionController::class, 'destroy'])->name('questions.destroy');
+
+        Route::get('/survei', [Admin\SurveyTemplateController::class, 'index'])->name('surveys.index');
+        Route::get('/survei/baru', [Admin\SurveyTemplateController::class, 'edit'])->name('surveys.create');
+        Route::post('/survei', [Admin\SurveyTemplateController::class, 'save'])->name('surveys.store');
+        Route::get('/survei/{template}/edit', [Admin\SurveyTemplateController::class, 'edit'])->name('surveys.edit');
+        Route::put('/survei/{template}', [Admin\SurveyTemplateController::class, 'save'])->name('surveys.update');
     });
 });

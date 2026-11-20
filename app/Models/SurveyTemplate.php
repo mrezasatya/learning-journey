@@ -10,6 +10,11 @@ class SurveyTemplate extends Model
 
     protected $casts = ['items' => 'array', 'is_default' => 'boolean', 'is_active' => 'boolean'];
 
+    public function responses()
+    {
+        return $this->hasMany(SurveyResponse::class, 'template_id');
+    }
+
     public static function default(): ?self
     {
         return static::where('is_default', true)->first() ?? static::first();
