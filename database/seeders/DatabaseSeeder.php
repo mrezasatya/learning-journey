@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             ProgramSeeder::class,
             DemoMediaSeeder::class,      // Tahap 4
             AssignmentSeeder::class,     // Tahap 5
+            LearningSimulationSeeder::class, // Tahap 6
         ]);
     }
 }

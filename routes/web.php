@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin;
 use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Employee;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\HomeController;
@@ -13,6 +14,10 @@ use Illuminate\Support\Facades\Route;
 | Rute BLJ — dikelompokkan per peran. Setiap tahap menambah rute di file ini.
 |--------------------------------------------------------------------------
 */
+
+// ---- Publik: verifikasi sertifikat dari QR (BR-35) ----
+Route::get('/verifikasi/{token}', \App\Http\Controllers\CertificateVerifyController::class)
+    ->middleware('throttle:60,1')->name('certificates.verify');
 
 // ---- Tamu (belum login) ----
 Route::middleware('guest')->group(function () {
@@ -38,7 +43,22 @@ Route::middleware(['auth', 'account'])->group(function () {
 
     // ---- Karyawan ----
     Route::middleware('role:employee')->group(function () {
-        Route::view('/beranda', 'employee.home-placeholder')->name('employee.home');
+        // Tahap 6 — Alur belajar
+        Route::get('/beranda', \App\Http\Controllers\Employee\HomeController::class)->name('employee.home');
+        Route::get('/riwayat', [Employee\HistoryController::class, 'index'])->name('employee.history');
+        Route::get('/belajar/{assignment}/sertifikat', [Employee\HistoryController::class, 'certificate'])->name('learn.certificate');
+        Route::get('/belajar/{assignment}', [Employee\LearningController::class, 'program'])->name('learn.program');
+        Route::get('/belajar/{assignment}/materi/{lesson}', [Employee\LearningController::class, 'lesson'])->name('learn.lesson');
+        Route::post('/belajar/{assignment}/materi/{lesson}/progres', [Employee\LearningController::class, 'progress'])
+            ->middleware('throttle:120,1')->name('learn.progress');
+        Route::get('/belajar/{assignment}/tes/{kind}', [Employee\TestController::class, 'intro'])->whereIn('kind', ['PRE', 'POST'])->name('learn.test.intro');
+        Route::post('/belajar/{assignment}/tes/{kind}', [Employee\TestController::class, 'start'])->whereIn('kind', ['PRE', 'POST'])->name('learn.test.start');
+        Route::get('/belajar/{assignment}/percobaan/{attempt}', [Employee\TestController::class, 'take'])->name('learn.test.take');
+        Route::post('/belajar/{assignment}/percobaan/{attempt}/jawab', [Employee\TestController::class, 'answer'])->middleware('throttle:300,1')->name('learn.test.answer');
+        Route::post('/belajar/{assignment}/percobaan/{attempt}/kumpulkan', [Employee\TestController::class, 'submit'])->name('learn.test.submit');
+        Route::get('/belajar/{assignment}/percobaan/{attempt}/hasil', [Employee\TestController::class, 'result'])->name('learn.test.result');
+        Route::get('/belajar/{assignment}/survei', [Employee\SurveyController::class, 'show'])->name('learn.survey');
+        Route::post('/belajar/{assignment}/survei', [Employee\SurveyController::class, 'store'])->name('learn.survey.store');
     });
 
     // ---- Admin L&D ----

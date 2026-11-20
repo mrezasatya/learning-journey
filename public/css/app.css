@@ -250,3 +250,4 @@ pre { padding: .75rem; overflow-x: auto; }
 .text-danger { color: var(--danger); } .text-success { color: var(--success); }
 
 @media print { .topbar, .sidebar, .no-print { display: none !important; } .content { padding: 0; } }
+@media (max-width: 600px) { .thumb { aspect-ratio: auto; height: 72px; font-size: 1rem; } }

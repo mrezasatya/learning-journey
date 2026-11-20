@@ -64,3 +64,4 @@ memindahkan ke stack lain berarti menerjemahkan, bukan merancang ulang.
 | 3 | Selesai | [04-tahap-3-karyawan-master.md](04-tahap-3-karyawan-master.md) |
 | 4 | Selesai | [05-tahap-4-program-konten.md](05-tahap-4-program-konten.md) |
 | 5 | Selesai | [06-tahap-5-penugasan.md](06-tahap-5-penugasan.md) |
+| 6 | Selesai | [07-tahap-6-alur-belajar.md](07-tahap-6-alur-belajar.md) |
