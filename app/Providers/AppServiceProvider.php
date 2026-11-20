@@ -18,9 +18,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(AuthAdapter::class, fn () => match (config('blj.auth.driver')) {
             default => new LocalAuthAdapter,
         });
-        if (interface_exists(Notifier::class)) {
-            $this->app->bind(Notifier::class, EmailInAppNotifier::class);
-        }
+        $this->app->bind(Notifier::class, EmailInAppNotifier::class);
     }
 
     public function boot(): void

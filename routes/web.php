@@ -61,6 +61,15 @@ Route::middleware(['auth', 'account'])->group(function () {
         Route::post('/belajar/{assignment}/survei', [Employee\SurveyController::class, 'store'])->name('learn.survey.store');
     });
 
+    // Tahap 7 — Notifikasi & Tim Saya
+    Route::get('/notifikasi', [\App\Http\Controllers\NotificationController::class, 'index'])->name('notifications.index');
+    Route::get('/notifikasi/{notification}', [\App\Http\Controllers\NotificationController::class, 'open'])->name('notifications.open');
+    Route::post('/notifikasi/baca-semua', [\App\Http\Controllers\NotificationController::class, 'readAll'])->name('notifications.readAll');
+    Route::middleware('role:supervisor')->group(function () {
+        Route::get('/tim', [\App\Http\Controllers\TeamController::class, 'index'])->name('team.index');
+        Route::get('/tim/ekspor', [\App\Http\Controllers\TeamController::class, 'export'])->name('team.export');
+    });
+
     // ---- Admin L&D ----
     Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function () {
         Route::get('/akun', [Admin\UserController::class, 'index'])->name('users.index');
