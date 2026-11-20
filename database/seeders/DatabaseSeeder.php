@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             SurveyTemplateSeeder::class,
             ProgramSeeder::class,
             DemoMediaSeeder::class,      // Tahap 4
+            AssignmentSeeder::class,     // Tahap 5
         ]);
     }
 }

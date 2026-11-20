@@ -81,9 +81,11 @@ class ProgramContentTest extends TestCase
         $this->actingAsNik('100001');
         $p = Program::where('code', 'K3-01')->first();
         foreach ([route('admin.programs.index'), route('admin.programs.create'), route('admin.programs.show', $p), route('admin.programs.edit', $p),
-            route('admin.questions.index', $p), route('admin.questions.create', $p), route('admin.lessons.create', $p->modules()->first()),
+            route('admin.questions.index', $p), route('admin.questions.create', $p),
             route('admin.surveys.index'), route('admin.surveys.create')] as $url) {
             $this->get($url)->assertOk();
         }
+        // Program berpeserta: materi dikunci (BR-09)
+        $this->get(route('admin.lessons.create', $p->modules()->first()))->assertRedirect();
     }
 }

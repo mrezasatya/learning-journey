@@ -108,5 +108,22 @@ Route::middleware(['auth', 'account'])->group(function () {
         Route::post('/survei', [Admin\SurveyTemplateController::class, 'save'])->name('surveys.store');
         Route::get('/survei/{template}/edit', [Admin\SurveyTemplateController::class, 'edit'])->name('surveys.edit');
         Route::put('/survei/{template}', [Admin\SurveyTemplateController::class, 'save'])->name('surveys.update');
+
+        // Tahap 5 — Aturan penugasan & penugasan
+        Route::get('/aturan', [Admin\RuleController::class, 'index'])->name('rules.index');
+        Route::get('/aturan/baru', [Admin\RuleController::class, 'create'])->name('rules.create');
+        Route::post('/aturan/pratinjau', [Admin\RuleController::class, 'preview'])->name('rules.preview');
+        Route::post('/aturan', [Admin\RuleController::class, 'store'])->name('rules.store');
+        Route::get('/aturan/{rule}/edit', [Admin\RuleController::class, 'edit'])->name('rules.edit');
+        Route::put('/aturan/{rule}', [Admin\RuleController::class, 'update'])->name('rules.update');
+        Route::post('/aturan/{rule}/toggle', [Admin\RuleController::class, 'toggle'])->name('rules.toggle');
+
+        Route::get('/penugasan', [Admin\AssignmentController::class, 'index'])->name('assignments.index');
+        Route::get('/penugasan/ekspor', [Admin\AssignmentController::class, 'export'])->name('assignments.export');
+        Route::get('/penugasan/manual', [Admin\AssignmentController::class, 'create'])->name('assignments.create');
+        Route::post('/penugasan/manual', [Admin\AssignmentController::class, 'store'])->name('assignments.store');
+        Route::get('/penugasan/cari-karyawan', [Admin\AssignmentController::class, 'searchEmployees'])->name('assignments.search');
+        Route::get('/penugasan/{assignment}', [Admin\AssignmentController::class, 'show'])->name('assignments.show');
+        Route::post('/penugasan/{assignment}/pengecualian', [Admin\AssignmentController::class, 'exempt'])->name('assignments.exempt');
     });
 });

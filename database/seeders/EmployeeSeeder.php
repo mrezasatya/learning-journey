@@ -88,6 +88,11 @@ class EmployeeSeeder extends Seeder
             }
         }
 
+        // Beberapa karyawan baru tahun berjalan (untuk demo Onboarding & penugasan di tengah tahun)
+        foreach (['100201' => '-290 days', '100215' => '-160 days', '100230' => '-80 days', '100245' => '-17 days'] as $nik => $ago) {
+            Employee::where('nik', $nik)->update(['join_date' => now()->modify($ago)->format('Y-m-d'), 'employment_status' => 'KONTRAK']);
+        }
+
         // Satu karyawan nonaktif (resign) — untuk menguji BR-05
         $make('100199', 'Joko Susilo', 'OPR', '1A', 'PROD', 'PLT-01', '100010', 'KONTRAK')->update(['is_active' => false, 'end_date' => now()->subMonth()]);
 
