@@ -251,3 +251,12 @@ pre { padding: .75rem; overflow-x: auto; }
 
 @media print { .topbar, .sidebar, .no-print { display: none !important; } .content { padding: 0; } }
 @media (max-width: 600px) { .thumb { aspect-ratio: auto; height: 72px; font-size: 1rem; } }
+/* Grafik batang (Tahap 8): satu warna brand, target ditandai garis, nilai dalam warna teks */
+.bar-track { position: relative; height: 14px; border-radius: 4px; overflow: visible; }
+.bar-fill { border-radius: 4px; }
+.bar-target { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--neutral-600); }
+.bar-row:hover .bar-fill { background: var(--brand-700); }
+.bar-row .val { text-align: right; font-variant-numeric: tabular-nums; color: var(--neutral-900); }
+.legend { display: flex; gap: 1rem; font-size: .8rem; color: var(--neutral-600); margin-bottom: .5rem; flex-wrap: wrap; }
+.legend i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; vertical-align: -1px; margin-right: .3rem; background: var(--brand-500); }
+.legend i.target { width: 2px; background: var(--neutral-600); border-radius: 0; }

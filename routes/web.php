@@ -154,5 +154,13 @@ Route::middleware(['auth', 'account'])->group(function () {
         Route::get('/penugasan/cari-karyawan', [Admin\AssignmentController::class, 'searchEmployees'])->name('assignments.search');
         Route::get('/penugasan/{assignment}', [Admin\AssignmentController::class, 'show'])->name('assignments.show');
         Route::post('/penugasan/{assignment}/pengecualian', [Admin\AssignmentController::class, 'exempt'])->name('assignments.exempt');
+
+        // Tahap 8 — Dashboard, laporan, teguran
+        Route::get('/dashboard', Admin\DashboardController::class)->name('dashboard');
+        Route::get('/laporan', [Admin\ReportController::class, 'index'])->name('reports.index');
+        Route::get('/laporan/evaluasi/{program}', [Admin\ReportController::class, 'evaluation'])->name('reports.evaluation');
+        Route::get('/overdue', [Admin\OverdueController::class, 'index'])->name('overdue.index');
+        Route::get('/overdue/ekspor', [Admin\OverdueController::class, 'export'])->name('overdue.export');
+        Route::post('/overdue/{followup}', [Admin\OverdueController::class, 'update'])->name('overdue.update');
     });
 });
