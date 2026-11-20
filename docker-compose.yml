@@ -1,0 +1,51 @@
+# Menjalankan BLJ di server/laptop dengan Docker (Brief 9.3 & 9.6).
+#   docker compose up -d --build
+#   docker compose exec app php artisan db:seed   # hanya untuk data DUMMY
+services:
+  app:
+    build: { context: ., dockerfile: docker/Dockerfile }
+    environment: &env
+      APP_ENV: production
+      APP_DEBUG: "false"
+      APP_KEY: ${APP_KEY:?isi APP_KEY di file .env}
+      APP_URL: ${APP_URL:-http://localhost:8080}
+      DB_CONNECTION: mysql
+      DB_HOST: db
+      DB_DATABASE: blj
+      DB_USERNAME: blj
+      DB_PASSWORD: ${DB_PASSWORD:-blj-secret}
+      QUEUE_CONNECTION: database
+      SESSION_DRIVER: database
+      SESSION_LIFETIME: 60
+      BLJ_CONTENT_DISK: ${BLJ_CONTENT_DISK:-local}
+      ROLE: web
+    ports: ["8080:80"]
+    volumes: [storage:/var/www/html/storage/app]
+    depends_on: [db]
+
+  worker:   # konversi video/PPT & kirim email (antrian)
+    build: { context: ., dockerfile: docker/Dockerfile }
+    environment: { <<: *env, ROLE: worker }
+    command: php artisan queue:work --tries=3 --timeout=3600
+    volumes: [storage:/var/www/html/storage/app]
+    depends_on: [db]
+
+  scheduler: # pengingat harian, overdue, penugasan tahunan
+    build: { context: ., dockerfile: docker/Dockerfile }
+    environment: { <<: *env, ROLE: scheduler }
+    command: php artisan schedule:work
+    volumes: [storage:/var/www/html/storage/app]
+    depends_on: [db]
+
+  db:
+    image: mariadb:11.4
+    environment:
+      MARIADB_DATABASE: blj
+      MARIADB_USER: blj
+      MARIADB_PASSWORD: ${DB_PASSWORD:-blj-secret}
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root-secret}
+    volumes: [db:/var/lib/mysql]
+
+volumes:
+  storage:
+  db:
