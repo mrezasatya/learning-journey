@@ -59,3 +59,4 @@ memindahkan ke stack lain berarti menerjemahkan, bukan merancang ulang.
 | Tahap | Status | Dokumen |
 |---|---|---|
 | 0 | Selesai | [01-tahap-0-fondasi.md](01-tahap-0-fondasi.md) |
+| 1 | Selesai | [02-tahap-1-database.md](02-tahap-1-database.md) |
