@@ -1,0 +1,66 @@
+openapi: 3.0.3
+info:
+  title: BLJ Integration API
+  version: "1.0"
+  description: |
+    API "rumah" integrasi Bukaka Learning Journey dengan ESS (Brief 9.3, US-30).
+    **Nonaktif secara default.** Aktifkan dengan `BLJ_API_ENABLED=true` dan isi `BLJ_API_TOKEN`
+    (string acak ≥ 40 karakter). Saat nonaktif, semua endpoint mengembalikan 404.
+servers:
+  - url: https://blj.perusahaan.local/api/v1
+security:
+  - bearerAuth: []
+components:
+  securitySchemes:
+    bearerAuth: { type: http, scheme: bearer }
+  schemas:
+    EmployeeInput:
+      type: object
+      required: [nik, full_name, position_code, grade_code, department_code, work_location_code, employment_status, join_date]
+      properties:
+        nik: { type: string, example: "100500" }
+        full_name: { type: string }
+        email: { type: string, nullable: true }
+        phone: { type: string, nullable: true }
+        position_code: { type: string, example: OPR }
+        grade_code: { type: string, example: 2A }
+        department_code: { type: string, example: PROD }
+        work_location_code: { type: string, example: PLT-01 }
+        supervisor_nik: { type: string, nullable: true }
+        employment_status: { type: string, enum: [TETAP, KONTRAK, PROYEK] }
+        join_date: { type: string, format: date }
+        end_date: { type: string, format: date, nullable: true }
+        is_active: { type: string, enum: ["1", "0"], default: "1" }
+        external_ref: { type: string, nullable: true, description: ID karyawan di ESS }
+paths:
+  /sync/employees:
+    post:
+      summary: Upsert data karyawan berdasarkan NIK (maks. 2.000 per panggilan)
+      description: Karyawan baru otomatis dibuatkan akun (wajib ganti password) dan aturan penugasan dievaluasi ulang.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                employees: { type: array, items: { $ref: '#/components/schemas/EmployeeInput' } }
+      responses:
+        "200": { description: "Diproses (sebagian bisa gagal — lihat `errors`)" }
+        "401": { description: Token tidak valid }
+        "422": { description: Semua baris gagal validasi }
+  /employees/{nik}/trainings:
+    get:
+      summary: Riwayat & status training per karyawan
+      parameters: [{ name: nik, in: path, required: true, schema: { type: string } }]
+      responses: { "200": { description: OK }, "404": { description: NIK tidak ditemukan } }
+  /compliance:
+    get:
+      summary: Ringkasan kepatuhan untuk dashboard ESS
+      parameters: [{ name: period, in: query, schema: { type: integer, example: 2026 } }]
+      responses: { "200": { description: OK } }
+  /certificates/{no}:
+    get:
+      summary: Verifikasi sertifikat (nomor di-URL-encode, mis. BLJ%2FK3-01%2F2026%2F00001)
+      parameters: [{ name: no, in: path, required: true, schema: { type: string } }]
+      responses: { "200": { description: OK }, "404": { description: Tidak ditemukan } }

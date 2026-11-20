@@ -59,6 +59,9 @@ Route::middleware(['auth', 'account'])->group(function () {
         Route::get('/belajar/{assignment}/percobaan/{attempt}/hasil', [Employee\TestController::class, 'result'])->name('learn.test.result');
         Route::get('/belajar/{assignment}/survei', [Employee\SurveyController::class, 'show'])->name('learn.survey');
         Route::post('/belajar/{assignment}/survei', [Employee\SurveyController::class, 'store'])->name('learn.survey.store');
+        Route::get('/jadwal-klasikal', [\App\Http\Controllers\CheckinController::class, 'mySessions'])->name('employee.sessions');
+        Route::get('/checkin/{token}', [\App\Http\Controllers\CheckinController::class, 'show'])->name('checkin.show');
+        Route::post('/checkin/{token}', [\App\Http\Controllers\CheckinController::class, 'store'])->middleware('throttle:20,1')->name('checkin.store');
     });
 
     // Tahap 7 — Notifikasi & Tim Saya
@@ -162,5 +165,16 @@ Route::middleware(['auth', 'account'])->group(function () {
         Route::get('/overdue', [Admin\OverdueController::class, 'index'])->name('overdue.index');
         Route::get('/overdue/ekspor', [Admin\OverdueController::class, 'export'])->name('overdue.export');
         Route::post('/overdue/{followup}', [Admin\OverdueController::class, 'update'])->name('overdue.update');
+
+        // Tahap 9 — Sesi klasikal, penyelesaian manual, pengaturan
+        Route::get('/sesi', [Admin\SessionController::class, 'index'])->name('sessions.index');
+        Route::post('/sesi', [Admin\SessionController::class, 'store'])->name('sessions.store');
+        Route::get('/sesi/{session}', [Admin\SessionController::class, 'show'])->name('sessions.show');
+        Route::get('/sesi/{session}/cetak', [Admin\SessionController::class, 'printSheet'])->name('sessions.print');
+        Route::post('/sesi/{session}/peserta', [Admin\SessionController::class, 'invite'])->name('sessions.invite');
+        Route::post('/peserta-sesi/{participant}', [Admin\SessionController::class, 'attendance'])->name('sessions.attendance');
+        Route::post('/penugasan/{assignment}/selesai-manual', [Admin\AssignmentController::class, 'manualComplete'])->name('assignments.manual');
+        Route::get('/pengaturan', [Admin\SettingsController::class, 'edit'])->name('settings.edit');
+        Route::put('/pengaturan', [Admin\SettingsController::class, 'update'])->name('settings.update');
     });
 });

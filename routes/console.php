@@ -26,3 +26,19 @@ Artisan::command('blj:daily', function (\App\Services\ReminderService $reminders
 })->purpose('Proses harian: tandai overdue, kirim pengingat & eskalasi');
 
 Schedule::command('blj:daily')->dailyAt('06:00');
+
+// Instalasi awal di server (TANPA data dummy): peran, template survei default, akun Super Admin
+Artisan::command('blj:install {username=superadmin}', function () {
+    $this->call('db:seed', ['--class' => \Database\Seeders\RoleSeeder::class, '--force' => true]);
+    $this->call('db:seed', ['--class' => \Database\Seeders\SurveyTemplateSeeder::class, '--force' => true]);
+    $username = $this->argument('username');
+    if (\App\Models\User::where('username', $username)->exists()) {
+        $this->warn("Akun {$username} sudah ada — tidak diubah.");
+
+        return;
+    }
+    $password = \Illuminate\Support\Str::password(16, symbols: false);
+    $user = \App\Models\User::create(['username' => $username, 'name' => 'Super Admin', 'password' => $password, 'must_change_password' => true]);
+    $user->roles()->attach(\App\Models\Role::where('code', \App\Models\Role::SUPER_ADMIN)->value('id'));
+    $this->info("Akun {$username} dibuat. Password sementara (catat sekarang, wajib diganti saat login): {$password}");
+})->purpose('Instalasi awal BLJ di server produksi tanpa data dummy');

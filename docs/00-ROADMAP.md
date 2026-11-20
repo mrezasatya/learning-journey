@@ -67,3 +67,26 @@ memindahkan ke stack lain berarti menerjemahkan, bukan merancang ulang.
 | 6 | Selesai | [07-tahap-6-alur-belajar.md](07-tahap-6-alur-belajar.md) |
 | 7 | Selesai | [08-tahap-7-atasan-notifikasi.md](08-tahap-7-atasan-notifikasi.md) |
 | 8 | Selesai | [09-tahap-8-dashboard-laporan.md](09-tahap-8-dashboard-laporan.md) |
+| 9 | Selesai | [10-tahap-9-klasikal-api-deploy.md](10-tahap-9-klasikal-api-deploy.md) · [DEPLOY.md](DEPLOY.md) |
+
+## Cakupan user story prototipe
+
+| Prioritas | Story | Status |
+|---|---|---|
+| **Must** | US-01, 03, 04, 05, 06, 07, 09, 11–19, 21, 25, 26, 27, 29 | Semua dibangun & diuji |
+| **Should** | US-02 (reset via email), 08 (PPT→PDF), 10 (versi program), 20 (notifikasi), 22 (eskalasi), 23 (sesi & QR), 24 (selesai manual), 30 (API) | Semua dibangun |
+| **Could** | US-28 (analisis butir soal) | Dibangun |
+| **Won't (fase 1)** | US-31 (SSO, sinkron otomatis ESS, WhatsApp, modul kompetensi) | Struktur & adapter disiapkan |
+
+## Keputusan yang masih menunggu Anda (dari Brief Bagian 12)
+
+| Kode | Dipakai di prototipe | Di mana mengubahnya bila jawabannya berbeda |
+|---|---|---|
+| Q-01 | Passing grade 80, 3 percobaan (1 + 2 remedial), jeda 60 menit | Pengaturan (default) & pengaturan tes per program |
+| Q-02 | Gagal 3× → ulang materi (siklus baru) | `AssessmentService::submit()` |
+| Q-03 | Tahunan: 31 Des atau +90 hari (lihat catatan risiko di Tahap 5) | Pengaturan → "+90 hari" |
+| Q-04 | Onboarding contoh 90 hari; maks. 365 | Field "Tenggat" per program |
+| Q-05 | Tim langsung default; Dept./Division Head bisa melihat tim tidak langsung | `TeamController` |
+| Q-06 | Email + in-app; tanpa email → in-app & eskalasi atasan | Adapter notifikasi (WA di fase berikut) |
+| Q-08 | Teguran diterbitkan di luar sistem (IR); BLJ hanya rekomendasi + pencatatan | Menu Overdue & Teguran |
+| Q-10 | Laravel + MySQL/MariaDB (Opsi A) | — |

@@ -144,6 +144,27 @@ class AssignmentController extends Controller
         return back()->with('success', $data['type'] === 'EXTEND' ? 'Tenggat diperpanjang.' : 'Karyawan dikecualikan dari penugasan ini.');
     }
 
+    /** Penyelesaian manual untuk training offline — bukti wajib (BR-44, US-24). */
+    public function manualComplete(Request $request, Assignment $assignment, MediaService $media, \App\Services\LearningFlow $flow)
+    {
+        abort_unless($assignment->isOpen(), 409, 'Penugasan tidak terbuka.');
+        $data = $request->validate([
+            'evidence' => 'required|file|mimes:pdf,jpg,jpeg,png|max:10240',
+            'score' => 'nullable|integer|min:0|max:100',
+            'notes' => 'required|string|min:10|max:2000',
+        ], ['evidence.required' => 'Bukti (daftar hadir/foto) wajib diunggah (BR-44).', 'notes.min' => 'Keterangan minimal 10 karakter.']);
+
+        \Illuminate\Support\Facades\DB::transaction(function () use ($assignment, $request, $media, $flow, $data) {
+            $file = $media->store($request->file('evidence'), 'evidence', false);
+            $assignment->manualCompletion()->create(['evidence_file_id' => $file->id, 'score' => $data['score'] ?? null,
+                'notes' => $data['notes'], 'recorded_by' => $request->user()->id]);
+            $flow->complete($assignment, 'MANUAL', $data['score'] ?? null);
+            AuditLogger::log('assignment.manual_complete', $assignment, null, ['score' => $data['score'] ?? null, 'notes' => $data['notes'], 'evidence_file_id' => $file->id]);
+        });
+
+        return back()->with('success', 'Penugasan ditandai selesai secara manual dan sertifikat diterbitkan.');
+    }
+
     private function filtered(Request $request)
     {
         return Assignment::query()

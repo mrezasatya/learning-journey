@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
             DemoMediaSeeder::class,      // Tahap 4
             AssignmentSeeder::class,     // Tahap 5
             LearningSimulationSeeder::class, // Tahap 6
+            SessionSeeder::class,        // Tahap 9
         ]);
 
         // Jalankan proses harian sekali (in-app saja) agar ada notifikasi & status overdue untuk demo

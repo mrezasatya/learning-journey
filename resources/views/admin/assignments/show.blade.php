@@ -51,4 +51,24 @@
     </div>
 </div>
 @includeIf('admin.assignments._learning')
+@if ($a->isOpen())
+<div class="card">
+    <h2>Penyelesaian manual (training offline)</h2>
+    <p class="muted">Untuk karyawan site yang mengikuti training secara tatap muka/offline. Bukti wajib; tercatat di audit log (BR-44, US-24).</p>
+    <form method="post" action="{{ route('admin.assignments.manual', $a) }}" enctype="multipart/form-data">@csrf
+        <div class="form-grid">
+            <div class="field"><label>Bukti (daftar hadir/foto) — wajib</label><input type="file" name="evidence" accept=".pdf,.jpg,.jpeg,.png" required></div>
+            <div class="field"><label>Nilai tes offline (opsional)</label><input type="number" name="score" min="0" max="100"></div>
+        </div>
+        <div class="field"><label>Keterangan</label><textarea name="notes" rows="2" required minlength="10" placeholder="mis. Mengikuti sesi offline di Site Kalimantan 12/11/2026, instruktur HSE"></textarea></div>
+        <button class="btn btn-secondary" data-confirm="Tandai selesai secara manual? Sertifikat akan diterbitkan.">Tandai selesai</button>
+    </form>
+</div>
+@endif
+@if ($a->manualCompletion)
+<div class="card"><h2>Penyelesaian manual</h2>
+    <p>Dicatat oleh {{ $a->manualCompletion->recorder?->displayName() }} pada {{ $a->manualCompletion->created_at->format('d/m/Y H:i') }}.
+        Nilai: {{ $a->manualCompletion->score ?? '—' }}. {{ $a->manualCompletion->notes }}
+        @if($a->manualCompletion->evidence)<a href="{{ $a->manualCompletion->evidence->signedUrl() }}" target="_blank">Lihat bukti</a>@endif</p></div>
+@endif
 @endsection
