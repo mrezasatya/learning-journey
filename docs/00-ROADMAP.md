@@ -68,6 +68,7 @@ memindahkan ke stack lain berarti menerjemahkan, bukan merancang ulang.
 | 7 | Selesai | [08-tahap-7-atasan-notifikasi.md](08-tahap-7-atasan-notifikasi.md) |
 | 8 | Selesai | [09-tahap-8-dashboard-laporan.md](09-tahap-8-dashboard-laporan.md) |
 | 9 | Selesai | [10-tahap-9-klasikal-api-deploy.md](10-tahap-9-klasikal-api-deploy.md) · [DEPLOY.md](DEPLOY.md) |
+| Demo | Vercel (terbatas) | [11-demo-vercel.md](11-demo-vercel.md) |
 
 ## Cakupan user story prototipe
 

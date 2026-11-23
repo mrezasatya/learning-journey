@@ -1,0 +1,9 @@
+/vendor
+/node_modules
+/tests
+/docker
+/storage/app/*
+/storage/logs/*
+/database/database.sqlite
+/.github
+.env

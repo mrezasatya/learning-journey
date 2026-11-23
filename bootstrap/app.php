@@ -19,6 +19,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'blj.api' => \App\Http\Middleware\ApiToken::class,
         ]);
         $middleware->redirectGuestsTo('/login');
+        // Di belakang reverse proxy / WAF / Vercel: baca X-Forwarded-Proto agar URL & URL bertanda tangan memakai https
+        $middleware->trustProxies(at: '*');
         $middleware->validateCsrfTokens(except: ['api/*']);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

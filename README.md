@@ -41,6 +41,11 @@ docker compose exec app php artisan db:seed --force          # data dummy
 
 Aplikasi tersedia di `http://localhost:8080`.
 
+## Demo terbatas di Vercel
+
+Untuk sekadar menunjukkan tampilan lewat tautan, lihat [`docs/11-demo-vercel.md`](docs/11-demo-vercel.md).
+Mode ini memakai data dummy sementara; tidak untuk pilot/produksi.
+
 ## Struktur folder penting
 
 | Folder | Isi |

@@ -11,6 +11,9 @@
 
 return [
 
+    // Mode demo terbatas (Vercel): banner peringatan, data sementara, tanpa konversi media.
+    'demo_mode' => (bool) env('BLJ_DEMO_MODE', false),
+
     // Disk penyimpanan konten (Storage adapter, Bagian 9.3). 'local' untuk prototipe,
     // 's3' untuk MinIO/S3-compatible di server internal.
     'content_disk' => env('BLJ_CONTENT_DISK', 'local'),
