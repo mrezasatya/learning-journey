@@ -1,0 +1,38 @@
+{
+  "version": 2,
+  "builds": [
+    { "src": "/api/index.php", "use": "vercel-php@0.7.4", "config": { "memory": 1024, "maxDuration": 30 } },
+    { "src": "/public/{css,js}/**", "use": "@vercel/static" },
+    { "src": "/public/{favicon.ico,robots.txt}", "use": "@vercel/static" }
+  ],
+  "routes": [
+    { "src": "/(css|js)/(.*)", "dest": "/public/$1/$2", "headers": { "Cache-Control": "public, max-age=3600" } },
+    { "src": "/(favicon\\.ico|robots\\.txt)", "dest": "/public/$1" },
+    { "src": "/(.*)", "dest": "/api/index.php", "headers": { "X-Robots-Tag": "noindex, nofollow" } }
+  ],
+  "env": {
+    "APP_NAME": "Bukaka Learning Journey",
+    "APP_ENV": "production",
+    "APP_DEBUG": "false",
+    "APP_LOCALE": "id",
+    "APP_TIMEZONE": "Asia/Jakarta",
+    "BLJ_DEMO_MODE": "true",
+    "DB_CONNECTION": "sqlite",
+    "DB_DATABASE": "/tmp/blj/demo.sqlite",
+    "SESSION_DRIVER": "cookie",
+    "SESSION_LIFETIME": "60",
+    "SESSION_SECURE_COOKIE": "true",
+    "CACHE_STORE": "array",
+    "QUEUE_CONNECTION": "sync",
+    "MAIL_MAILER": "log",
+    "LOG_CHANNEL": "stderr",
+    "BLJ_CONTENT_DISK": "local",
+    "BLJ_API_ENABLED": "false",
+    "APP_CONFIG_CACHE": "/tmp/blj-config.php",
+    "APP_EVENTS_CACHE": "/tmp/blj-events.php",
+    "APP_PACKAGES_CACHE": "/tmp/blj-packages.php",
+    "APP_ROUTES_CACHE": "/tmp/blj-routes.php",
+    "APP_SERVICES_CACHE": "/tmp/blj-services.php",
+    "VIEW_COMPILED_PATH": "/tmp/blj/storage/framework/views"
+  }
+}

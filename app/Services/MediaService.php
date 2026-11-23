@@ -65,6 +65,11 @@ class MediaService
 
     public function process(StoredFile $file): void
     {
+        if (config('blj.demo_mode')) {
+            $file->update(['processing_status' => 'FAILED', 'processing_error' => 'Konversi media tidak tersedia di mode demo (Vercel).']);
+
+            return;
+        }
         $file->update(['processing_status' => 'PROCESSING', 'processing_error' => null]);
         $ext = strtolower(pathinfo($file->storage_key, PATHINFO_EXTENSION));
         try {

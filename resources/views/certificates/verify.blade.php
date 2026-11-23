@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
 </head>
 <body>
+@include('partials.demo-banner')
 <div class="auth-wrap"><div class="card auth-card">
     <div class="brand"><span class="brand-mark">BLJ</span><span class="brand-name">Verifikasi Sertifikat</span></div>
     @if (! $cert)
